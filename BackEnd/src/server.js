@@ -4,14 +4,20 @@ import { connectDB } from "./config/db.js";
 import dotenv from "dotenv";
 import rateLimit from "./middleware/rateLimiter.js"; // Importing the rate limiting middleware
 import cors from "cors"; // Importing CORS middleware
+import path from "path";
 // Importing necessary modules and configurations
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || "*"
-})); // Apply CORS middleware
+const __dirname = path.resolve();
+if (process.env.node_env !== "production") {
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGIN || "*",
+    })
+  ); // Apply CORS middleware
+}
 
 app.use(express.json()); // Middleware to parse JSON bodies
 
@@ -23,6 +29,14 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/notes", noteRoutes);
+
+if (process.env.node_env === "production") {
+  app.use(express.static(path.join(__dirname, "../FrontEnd/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../FrontEnd", "dist", "index.html"));
+  });
+}
 
 connectDB()
   .then(() => {
