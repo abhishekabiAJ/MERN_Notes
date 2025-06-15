@@ -9,8 +9,8 @@ import path from "path";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT;
-const __dirname = path.resolve();
+const PORT = process.env.PORT||5000;
+const __dirname = path.resolve()
 if (process.env.node_env !== "production") {
   app.use(
     cors({
@@ -34,14 +34,14 @@ if (process.env.node_env === "production") {
   app.use(express.static(path.join(__dirname, "../FrontEnd/dist")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../FrontEnd", "dist", "index.html"));
+    res.sendFile(path.join(__dirname,"../FrontEnd","dist","index.html"));
   });
 }
 
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
+      console.log(`Server is running on ${PORT}`);
     });
   })
   .catch((error) => {
