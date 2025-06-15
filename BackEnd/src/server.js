@@ -14,7 +14,7 @@ const __dirname = path.resolve();
 if (process.env.node_env !== "production") {
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN || "*",
+      origin: "http://localhost:5173",
     })
   ); // Apply CORS middleware
 }
